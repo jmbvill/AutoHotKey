@@ -29,6 +29,52 @@ RemoveToolTip:
 	ToolTip
 return
 
+;---FUNCTIONS----------------------------------------------------------------------------------------------------------------------------------------------
+;closeWorkWindows										#F01
+
+/*===closeWorkWindows===================================#F01
+	Summary: Closes windows based on window titles from a user-defined array
+
+	Parameters:
+		workWindows: An array of window titles
+
+	Return:
+		Nothing
+*/
+closeWorkWindows(workWindows)
+{
+	GroupAdd, Browser, Edge
+	for key, window in workWindows
+	{
+		if window = Edge
+		{
+			GroupActivate, Browser
+			WinGet, first_ID, ID, A
+			Loop
+			{
+				GroupActivate, Browser
+				WinGet, active_ID, ID, A
+				sleep 100
+				PixelGetColor, pixColor,1700,20,RGB
+				;if the chrome window is green, switch its desktop, else do nothing
+				if (pixColor = 0xD8B2AD)
+				{
+					WinClose A
+				}
+				if (active_ID = first_ID) ;when we get back to the first window, break out of loop.
+				{
+					break
+				}
+			}
+		}
+		else
+		{
+			WinClose %window%
+		}
+	}
+	return
+}
+
 ;---MAIN---------------------------------------------------------------------------------------------------------------------------------------------------
 ;NAME												HOTKEY						INDEX
 ;Save and Reload									MEH + R						#HK01
@@ -423,40 +469,6 @@ return
 	SetTimer, RemoveToolTip, 2000
 
 return
-
-closeWorkWindows(workWindows)
-{
-	GroupAdd, Browser, Edge
-	for key, window in workWindows
-	{
-		if window = Edge
-		{
-			GroupActivate, Browser
-			WinGet, first_ID, ID, A
-			Loop
-			{
-				GroupActivate, Browser
-				WinGet, active_ID, ID, A
-				sleep 100
-				PixelGetColor, pixColor,1700,20,RGB
-				;if the chrome window is green, switch its desktop, else do nothing
-				if (pixColor = 0xD8B2AD)
-				{
-					WinClose A
-				}
-				if (active_ID = first_ID) ;when we get back to the first window, break out of loop.
-				{
-					break
-				}
-			}
-		}
-		else
-		{
-			WinClose %window%
-		}
-	}
-	return
-}
 
 /*===StreamDeck_Send All Windows to the Right Screen============================#HK15
 	Summary: For use with the Stream Deck.

@@ -19,9 +19,9 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 ;DetectHiddenWindows, On ;Allows the script to find windows that live on different desktops.
 
 ;---INCLUDED FILES-----------------------------------------------------------------------------------------------------------------------------------------
-#Include %A_ScriptDir%\Lib\FocusWindow.ahk
-#Include %A_ScriptDir%\Lib\WinClip.ahk
-#Include %A_ScriptDir%\Lib\WinClipAPI.ahk
+#Include %A_ScriptDir%\lib\FocusWindow.ahk
+#Include %A_ScriptDir%\external-lib\WinClip.ahk
+#Include %A_ScriptDir%\external-lib\WinClipAPI.ahk
 
 ;---LABELS-------------------------------------------------------------------------------------------------------------------------------------------------
 ;This section is to set labels for use with the SetTimer function

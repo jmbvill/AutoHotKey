@@ -2,9 +2,11 @@
 	AutoHotKey.ahk: My main hotkey script. Stays on during normal computer use and listens to hotkeys
 
 	Author: jmbvill
-	Date Modified: 2024.04.18
-	Version Number: 1.0.1
-	Changelog: #HK04: Changed Detect Hidden Windows to Off so a separate calculator window will always open for each virtual desktop.
+	Date Modified: 2024.04.23
+	Version Number: 1.1.0
+	Changelog:
+		Added a FUNCTIONS section
+		F02: added a function that makes it easier to create dictionaries
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,6 +33,7 @@ return
 
 ;---FUNCTIONS----------------------------------------------------------------------------------------------------------------------------------------------
 ;closeWorkWindows										#F01
+;createDictionary										#F02
 
 /*===closeWorkWindows===================================#F01
 	Summary: Closes windows based on window titles from a user-defined array
@@ -73,6 +76,35 @@ closeWorkWindows(workWindows)
 		}
 	}
 	return
+}
+
+/*===createDictionary===================================#F02
+	Summary: Creates a dictionary based on key value pairs that the user specifies
+
+	Parameters:
+		kVPairs: a list of key-value pairs where keys and values are separated by ":" and pairs are separated by "|"
+		for example kVPairs = "key1:value1|key2:value2|key3:value3"
+
+	Return:
+		dict: a dictionary (technically an associative array)
+*/
+createDictionary(kVPairs)
+{
+	;Initialize an empty dictionary
+	local dict := {}
+
+	;Split the input string into key-value pairs
+	pairs := StrSplit(kVPairs, "|")
+
+	;Loop through each pair and add it to the dictionary
+	for _, pair in pairs {
+		colonPos := InStr(pair, ":") ;Find the position of the colon in the string
+		key := Trim(SubStr(pair, 1, colonPos - 1)) ;Extract the string representing the key
+		value := Trim(SubStr(pair, colonPos + 1)) ;Extract the string representing the value
+		dict[key] := value
+	}
+
+	return dict
 }
 
 ;---MAIN---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -594,20 +626,12 @@ return
 		Hotkey: CTRL + RMB
 	*/
 	^RButton::
-		IniRead, testBench, F:\Users\Josh\Documents\Autohotkey\AutoHotkey.ini, Toggles, testBench ;reads state of testBench from ini file
-		msgbox %testBench%
-		SetTimer, RemoveToolTip, 1000
-		Switch testBench
-		{
-		Case 1:
-			{
-				msgbox, heyyyy
-				testBench = 0
-				IniWrite, %testBench%, F:\Users\Josh\Documents\Autohotkey\AutoHotkey.ini, Toggles, testBench ;changes testBench state on ini file
-				msgbox %testBench%
-			}
+		myDict := CreateDictionary("name:Alice|age:30|city:Wonderland")
 
-		}
+		; Access values using keys
+		MsgBox % myDict["name"] ; Displays "Alice"
+		MsgBox % myDict["age"] ; Displays "30"
+		MsgBox % myDict["city"] ; Displays "Wonderland"
 
 	!#+e:: ;leave zoom call
 		SetTitleMatchMode, 2

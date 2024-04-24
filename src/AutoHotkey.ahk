@@ -3,10 +3,9 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.23
-	Version Number: 1.2.0
+	Version Number: 1.2.1
 	Changelog:
-		Created a section for content-aware includes
-		fixed issue with settings from .ini file not being read
+		HK02: fixed buggy VSCode opening
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -168,12 +167,15 @@ return
 	Hotkey: MEH + Delete
 */
 $^+!Del::
+	tooltip Opening script in VSCode...
 	SetTitleMatchMode, 2
 	DetectHiddenWindows, On
 	;for some reason the run function doesn't like it when you feed it the VS Code filepath directly. This gets around the issue by constructing and storing the filepath in a separate variable
-	vscodepath := "C:\Users\" . A_UserName . "\AppData\Local\Programs\Microsoft VS Code\Code.exe"
+	vscodepath := StrReplace(A_AppData, "Roaming", "Local\Programs\Microsoft VS Code\Code.exe")
 
-	Run, %vscodepath% %A_ScriptFullPath%
+	Run %vscodepath%
+
+	SetTimer, RemoveToolTip, 3000
 return
 
 /*======Audio Switcher==========================================================#HK03

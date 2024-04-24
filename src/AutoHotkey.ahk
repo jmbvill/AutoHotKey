@@ -3,11 +3,10 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.23
-	Version Number: 1.1.1
+	Version Number: 1.2.0
 	Changelog:
-		Added a FUNCTIONS section
-		F02: added a function that makes it easier to create dictionaries
-		F01: rewrote closeWindows function to make it more reusable
+		Created a section for content-aware includes
+		fixed issue with settings from .ini file not being read
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -16,6 +15,11 @@
 ;#Warn  ;Enable warnings to assist with detecting common errors.
 SendMode Input ;Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
+SetTitleMatchMode, 2
+
+;set some initial settings from the .ini file
+IniRead, dblclkToggle, %A_ScriptDir%\AutoHotkey.ini, Toggles, dblclkToggle
+IniRead, testBench, %A_ScriptDir%\AutoHotkey.ini, Toggles, testBench
 
 ;The following settings are disabled because this script sets them during normal operation.
 ;SetTitleMatchMode, 1 ;The window's title can contain WinTitle anywhere inside it to be a match.
@@ -25,6 +29,17 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 #Include %A_ScriptDir%\lib\FocusWindow.ahk
 #Include %A_ScriptDir%\external-lib\WinClip.ahk
 #Include %A_ScriptDir%\external-lib\WinClipAPI.ahk
+
+;---CONTENT-AWARE INCLUDES----------------------------------------------------------------------------------------------------------------------------------
+;===Facebook Messenger======================================
+#IfWinActive, ahk_class MessengerDesktop0
+	#Include %A_ScriptDir%\lib\FacebookMessenger.ahk
+#IfWinActive
+
+;===Blue Bubbles============================================
+#IfWinActive, ahk_class FLUTTER_RUNNER_WIN32_WINDOW
+	#Include %A_ScriptDir%\lib\BlueBubbles.ahk
+#IfWinActive
 
 ;---LABELS-------------------------------------------------------------------------------------------------------------------------------------------------
 ;This section is to set labels for use with the SetTimer function
@@ -36,7 +51,7 @@ return
 ;closeWorkWindows										#F01
 ;createDictionary										#F02
 
-/*===closeWorkWindows===================================#F01
+/*======closeWorkWindows================================#F01
 	Summary: Closes windows based on window titles from a user-defined array
 
 	Parameters:
@@ -80,7 +95,7 @@ closeWindows(windowsToClose)
 	return
 }
 
-/*===createDictionary===================================#F02
+/*======createDictionary================================#F02
 	Summary: Creates a dictionary based on key value pairs that the user specifies
 
 	Parameters:
@@ -134,18 +149,7 @@ createDictionary(kVPairs)
 ;Radial Menu										MEH + F24					#TB01
 ;Round Calculator Result							CTRL + C					#TB02
 
-/*===StreamDeck_Send All Windows to the Right Screen============================#HK14
-	Summary:
-
-	Hotkey: ALT + WIN + SHIFT + G
-*/
-
-;Read state of system toggles from ini file
-IniRead, dblclkToggle, %A_MyDocuments%\AutoHotkey\AutoHotkey.ini, Toggles, dblclkToggle
-IniRead, testBench, %A_MyDocuments%\AutoHotkey\AutoHotkey.ini, Toggles, testBench
-SetTitleMatchMode, 2
-
-/*===Save and Reload============================================================#HK01
+/*======Save and Reload=========================================================#HK01
 	Summary: Save and reload this script.
 
 	Hotkey: MEH + R
@@ -158,7 +162,7 @@ $^+!r::
 	Reload
 return
 
-/*===Edit Default Script========================================================#HK02
+/*======Edit Default Script=====================================================#HK02
 	Summary: Open and Edit this script in VS Code
 
 	Hotkey: MEH + Delete
@@ -172,7 +176,7 @@ $^+!Del::
 	Run, %vscodepath% %A_ScriptFullPath%
 return
 
-/*===Audio Switcher=============================================================#HK03
+/*======Audio Switcher==========================================================#HK03
 	Summary: Switch between speaker and headphones and the default playback device
 	Hotkey: MEH + Backspace
 */
@@ -202,7 +206,7 @@ $^+!Backspace::
 	}
 return
 
-/*===Calculator================================================================#HK04
+/*======Calculator=============================================================#HK04
 	Summary: Opens Windows Calculator
 
 	Hotkey: MEH + =
@@ -229,7 +233,7 @@ $^+!=::
 		Run calc.exe
 return
 
-/*===Shutdown==================================================================#HK05
+/*======Shutdown===============================================================#HK05
 	Summary: Closes all windows and shuts down the computer
 
 	Hotkey: MEH + X
@@ -277,7 +281,7 @@ $^+!x::
 	Shutdown, 1
 return
 
-/*===Focus on Window===========================================================#HK06
+/*======Focus on Window========================================================#HK06
 	Summary: Designate a window to focus on. Press the hotkey again to bring that window to the front
 
 	Hotkey: MEH + -
@@ -295,7 +299,7 @@ $^+!-::
 	}
 return
 
-/*===Instant Window Attributes=================================================#HK07
+/*======Instant Window Attributes==============================================#HK07
 	Summary: Hover the mouse over a window and press the hotkeys. A tooltip will appear with the Title, ahk_ID, size, and position of the window as long as the right mouse button is held.
 
 	Hotkey: MEH + RMB
@@ -313,7 +317,7 @@ $^+!RButton::
 	tooltip
 return
 
-/*===Instant Mouse Position====================================================#HK08
+/*======Instant Mouse Position=================================================#HK08
 	Summary: Press the hotkeys and a tooltip will appear with the coordinates of the mouse and the color of the pixel underneath as long as the left mouse button is held.
 
 	Hotkey: MEH + LMB
@@ -331,7 +335,7 @@ $^+!LButton::
 	tooltip
 return
 
-/*===Mouse Switch Screen=======================================================#HK09
+/*======Mouse Switch Screen====================================================#HK09
 	Summary: Moves the mouse to the monitor that it's not currently on. A tooltip will appear to help with visibility.
 
 	Hotkey: MEH + F12
@@ -353,7 +357,7 @@ return
 	SetTimer, RemoveToolTip, 500
 return
 
-/*===Move Windows to Start Position============================================#HK10
+/*======Move Windows to Start Position=========================================#HK10
 	Summary: Moves all windows to my preferred locations on my preferred desktop. For use when the computer first starts up.
 
 	Hotkey: MEH + N
@@ -438,7 +442,7 @@ $^!+n::
 	SetTimer, RemoveToolTip, 1500
 return
 
-/*===StreamDeck_Hold to Shutdown Instructions==================================#HK11
+/*======StreamDeck_Hold to Shutdown Instructions===============================#HK11
 	Summary: For use with the Stream Deck.
 	This triggers when the user fails to hold the shutdown button to trigger the shutdown hotkey. This opens a traytip with instructions on how to shut down the computer from the Stream Deck
 
@@ -448,7 +452,7 @@ return
 	TrayTip, Shutdown Failed, Hold for 1 second to shut down, , 2
 return
 
-/*===StreamDeck_Open Stream Deck Config========================================#HK12
+/*======StreamDeck_Open Stream Deck Config=====================================#HK12
 	Summary: For use with the Stream Deck.
 	Opens the Stream Deck Configuration Software.
 
@@ -458,7 +462,7 @@ return
 	Run, "F:\Program Files\Elgato\StreamDeck\StreamDeck.exe"
 return
 
-/*===StreamDeck_Reset Stream Deck==============================================#HK13
+/*=====StreamDeck_Reset Stream Deck===========================================#HK13
 	Summary: For use with the Stream Deck.
 	Resets the Stream Deck Software
 
@@ -477,7 +481,7 @@ return
 
 return
 
-/*===StreamDeck_Close Work Windows=============================================#HK14
+/*======StreamDeck_Close Work Windows==========================================#HK14
 	Summary: For use with the Stream Deck.
 	Closes work windows on all virtual desktops
 
@@ -526,7 +530,7 @@ return
 
 return
 
-/*===StreamDeck_Send All Windows to the Right Screen============================#HK15
+/*======StreamDeck_Send All Windows to the Right Screen=========================#HK15
 	Summary: For use with the Stream Deck.
 	Sends all open windows to the right screen. For use when starting up a gaming session where you want only the game window on the left monitor
 
@@ -561,40 +565,27 @@ return
 	SetTimer, RemoveToolTip, 1000
 return
 
-#IfWinActive, ahk_class MessengerDesktop0
-	#Include %A_ScriptDir%\Lib\FacebookMessenger.ahk
-#IfWinActive
-; #IfWinActive, ahk_class FLUTTER_RUNNER_WIN32_WINDOW
-; 	{
-; 		esc::
-; 			MouseGetPos, mouseX, mouseY
-; 			MouseMove, 600, 1030
-; 			MouseClick
-; 			MouseMove, mouseX, mouseY
-; 		return
-; 	}
-; #IfWinActive
-
-/*===Test Bench Toggle==========================================================#HK99
+/*======Test Bench Toggle=======================================================#HK99
 	Summary: Toggles the test bench section on/off. Useful for when the hotkeys in this section coincides with other hotkeys.
 
 	Hotkey: MEH + B
 */
+
 $^+!b::
-	IniRead, testBench, F:\Users\Josh\Documents\Autohotkey\AutoHotkey.ini, Toggles, testBench ;reads state of testBench from ini file
+	IniRead, testBench, %A_ScriptDir%\AutoHotkey.ini, Toggles, testBench ;reads state of testBench from ini file
 	Switch testBench
 	{
 	Case 1:
 		{
 			testBench = 0
-			IniWrite, %testBench%, F:\Users\Josh\Documents\Autohotkey\AutoHotkey.ini, Toggles, testBench ;changes testBench state on ini file
+			IniWrite, %testBench%, %A_ScriptDir%\AutoHotkey.ini, Toggles, testBench ;changes testBench state on ini file
 			tooltip test bench off
 			SetTimer, RemoveToolTip, 1000
 		}
 	Case 0:
 		{
 			testBench = 1
-			IniWrite, %testBench%, F:\Users\Josh\Documents\Autohotkey\AutoHotkey.ini, Toggles, testBench ;changes testBench state on ini file
+			IniWrite, %testBench%, %A_ScriptDir%\AutoHotkey.ini, Toggles, testBench ;changes testBench state on ini file
 			tooltip test bench on
 			SetTimer, RemoveToolTip, 1000
 		}
@@ -605,7 +596,7 @@ return
 ;This section is for scripts that I'm still testing, temporary scripts, or scripts that I don't want to always be active.
 #If testBench = 1
 
-	/*===Radial Menu================================================================#TB01
+	/*======Radial Menu=============================================================#TB01
 		Summary:
 
 		Hotkey: MEH + F24
@@ -622,7 +613,7 @@ return
 		}
 	return
 
-	/*===Round Calculator Result====================================================#TB02
+	/*======Round Calculator Result=================================================#TB02
 		Summary: When user copies something from the calculator, round the number to the second decimal point. Used for when calculating money to charge on Venmo.
 
 		Hotkey: CTRL + C
@@ -644,7 +635,7 @@ return
 			clipboard:=check
 		}
 	return
-	/*===Round Calculator Result====================================================#TB02
+	/*======Round Calculator Result=================================================#TB02
 		Summary: General purpose testing hotkey
 
 		Hotkey: CTRL + RMB

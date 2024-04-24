@@ -3,9 +3,9 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.23
-	Version Number: 1.2.1
+	Version Number: 1.3.0
 	Changelog:
-		HK02: fixed buggy VSCode opening
+		Added content-aware hotkeys for Civ 6
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -38,6 +38,11 @@ IniRead, testBench, %A_ScriptDir%\AutoHotkey.ini, Toggles, testBench
 ;===Blue Bubbles============================================
 #IfWinActive, ahk_class FLUTTER_RUNNER_WIN32_WINDOW
 	#Include %A_ScriptDir%\lib\BlueBubbles.ahk
+#IfWinActive
+
+;===Civilization VI=========================================
+#IfWinActive, ahk_exe CivilizationVI_DX12.exe
+	#Include %A_ScriptDir%\lib\CivilizationVI.ahk
 #IfWinActive
 
 ;---LABELS-------------------------------------------------------------------------------------------------------------------------------------------------

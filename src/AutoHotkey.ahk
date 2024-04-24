@@ -3,10 +3,11 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.23
-	Version Number: 1.1.0
+	Version Number: 1.1.1
 	Changelog:
 		Added a FUNCTIONS section
 		F02: added a function that makes it easier to create dictionaries
+		F01: rewrote closeWindows function to make it more reusable
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -44,23 +45,24 @@ return
 	Return:
 		Nothing
 */
-closeWorkWindows(workWindows)
+closeWindows(windowsToClose)
 {
-	GroupAdd, Browser, Edge
-	for key, window in workWindows
+	for _, window in windowsToClose ;for each window specified in windowsToClose, extract the winColor and the winTitle
 	{
-		if window = Edge
+		winColor := window["winColor"]
+		winTitle := window["winTitle"]
+		if winColor ;if the window has a winColor specified, add it to a group and cycle through them to check if the winColor matches
 		{
-			GroupActivate, Browser
+			GroupAdd, windowGroup, %winTitle%
+			GroupActivate, windowGroup
 			WinGet, first_ID, ID, A
 			Loop
 			{
-				GroupActivate, Browser
+				GroupActivate, windowGroup
 				WinGet, active_ID, ID, A
 				sleep 100
 				PixelGetColor, pixColor,1700,20,RGB
-				;if the chrome window is green, switch its desktop, else do nothing
-				if (pixColor = 0xD8B2AD)
+				if (pixColor = winColor) ; only close windows in this group that have a matching color
 				{
 					WinClose A
 				}
@@ -70,9 +72,9 @@ closeWorkWindows(workWindows)
 				}
 			}
 		}
-		else
+		Else
 		{
-			WinClose %window%
+			WinClose %winTitle%
 		}
 	}
 	return
@@ -482,19 +484,41 @@ return
 	Hotkey: ALT + WIN + SHIFT + C
 */
 !#+c::
+	;;define work windows here
+	;you can define a specific window color for each browser by typing "?" and then the pixel color of the window in RGB
+	workWindows := ["Slack", "Edge ? 0xD8B2AD"]
+
 	ToolTip, Closing Work Windows...
 	BlockInput On
 	CoordMode, Pixel, Relative
 	SetTitleMatchMode, 2
 	first_ID = 0
 	active_ID = 1
-	workWindows := ["Slack", "Edge"]
+
+	windowsToClose := [] ;initialize array
+
+	;extract winTitle and winColor
+	for _,winTitle in workWindows
+	{
+		if questionPos := InStr(winTitle, "?")
+		{
+			winColor := Trim(SubStr(winTitle, questionPos + 1))
+			winTitle := Trim(SubStr(winTitle, 1, questionPos - 1))
+			dict := createDictionary("winTitle:" winTitle "|winColor:" winColor)
+		}
+		else
+		{
+
+			dict:= createDictionary("winTitle:" winTitle)
+		}
+		windowsToClose.Push(dict)
+	}
 	send, #^{Left}
 	sleep 500
-	closeWorkWindows(workWindows)
+	closeWindows(windowsToClose)
 	send, #^{Right} ;go to the next desktop
 	sleep 1000
-	closeWorkWindows(workWindows)
+	closeWindows(windowsToClose)
 
 	ToolTip, Successfully Closed Work Windows
 	BlockInput Off

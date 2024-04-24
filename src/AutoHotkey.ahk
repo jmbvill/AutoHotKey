@@ -2,9 +2,12 @@
 	AutoHotKey.ahk: My main hotkey script. Stays on during normal computer use and listens to hotkeys
 
 	Author: jmbvill
-	Date Modified: 2024.04.18
-	Version Number: 1.0.1
-	Changelog: #HK04: Changed Detect Hidden Windows to Off so a separate calculator window will always open for each virtual desktop.
+	Date Modified: 2024.04.23
+	Version Number: 1.1.1
+	Changelog:
+		Added a FUNCTIONS section
+		F02: added a function that makes it easier to create dictionaries
+		F01: rewrote closeWindows function to make it more reusable
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -28,6 +31,83 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 RemoveToolTip:
 	ToolTip
 return
+
+;---FUNCTIONS----------------------------------------------------------------------------------------------------------------------------------------------
+;closeWorkWindows										#F01
+;createDictionary										#F02
+
+/*===closeWorkWindows===================================#F01
+	Summary: Closes windows based on window titles from a user-defined array
+
+	Parameters:
+		workWindows: An array of window titles
+
+	Return:
+		Nothing
+*/
+closeWindows(windowsToClose)
+{
+	for _, window in windowsToClose ;for each window specified in windowsToClose, extract the winColor and the winTitle
+	{
+		winColor := window["winColor"]
+		winTitle := window["winTitle"]
+		if winColor ;if the window has a winColor specified, add it to a group and cycle through them to check if the winColor matches
+		{
+			GroupAdd, windowGroup, %winTitle%
+			GroupActivate, windowGroup
+			WinGet, first_ID, ID, A
+			Loop
+			{
+				GroupActivate, windowGroup
+				WinGet, active_ID, ID, A
+				sleep 100
+				PixelGetColor, pixColor,1700,20,RGB
+				if (pixColor = winColor) ; only close windows in this group that have a matching color
+				{
+					WinClose A
+				}
+				if (active_ID = first_ID) ;when we get back to the first window, break out of loop.
+				{
+					break
+				}
+			}
+		}
+		Else
+		{
+			WinClose %winTitle%
+		}
+	}
+	return
+}
+
+/*===createDictionary===================================#F02
+	Summary: Creates a dictionary based on key value pairs that the user specifies
+
+	Parameters:
+		kVPairs: a list of key-value pairs where keys and values are separated by ":" and pairs are separated by "|"
+		for example kVPairs = "key1:value1|key2:value2|key3:value3"
+
+	Return:
+		dict: a dictionary (technically an associative array)
+*/
+createDictionary(kVPairs)
+{
+	;Initialize an empty dictionary
+	local dict := {}
+
+	;Split the input string into key-value pairs
+	pairs := StrSplit(kVPairs, "|")
+
+	;Loop through each pair and add it to the dictionary
+	for _, pair in pairs {
+		colonPos := InStr(pair, ":") ;Find the position of the colon in the string
+		key := Trim(SubStr(pair, 1, colonPos - 1)) ;Extract the string representing the key
+		value := Trim(SubStr(pair, colonPos + 1)) ;Extract the string representing the value
+		dict[key] := value
+	}
+
+	return dict
+}
 
 ;---MAIN---------------------------------------------------------------------------------------------------------------------------------------------------
 ;NAME												HOTKEY						INDEX
@@ -404,59 +484,47 @@ return
 	Hotkey: ALT + WIN + SHIFT + C
 */
 !#+c::
+	;;define work windows here
+	;you can define a specific window color for each browser by typing "?" and then the pixel color of the window in RGB
+	workWindows := ["Slack", "Edge ? 0xD8B2AD"]
+
 	ToolTip, Closing Work Windows...
 	BlockInput On
 	CoordMode, Pixel, Relative
 	SetTitleMatchMode, 2
 	first_ID = 0
 	active_ID = 1
-	workWindows := ["Slack", "Edge"]
+
+	windowsToClose := [] ;initialize array
+
+	;extract winTitle and winColor
+	for _,winTitle in workWindows
+	{
+		if questionPos := InStr(winTitle, "?")
+		{
+			winColor := Trim(SubStr(winTitle, questionPos + 1))
+			winTitle := Trim(SubStr(winTitle, 1, questionPos - 1))
+			dict := createDictionary("winTitle:" winTitle "|winColor:" winColor)
+		}
+		else
+		{
+
+			dict:= createDictionary("winTitle:" winTitle)
+		}
+		windowsToClose.Push(dict)
+	}
 	send, #^{Left}
 	sleep 500
-	closeWorkWindows(workWindows)
+	closeWindows(windowsToClose)
 	send, #^{Right} ;go to the next desktop
 	sleep 1000
-	closeWorkWindows(workWindows)
+	closeWindows(windowsToClose)
 
 	ToolTip, Successfully Closed Work Windows
 	BlockInput Off
 	SetTimer, RemoveToolTip, 2000
 
 return
-
-closeWorkWindows(workWindows)
-{
-	GroupAdd, Browser, Edge
-	for key, window in workWindows
-	{
-		if window = Edge
-		{
-			GroupActivate, Browser
-			WinGet, first_ID, ID, A
-			Loop
-			{
-				GroupActivate, Browser
-				WinGet, active_ID, ID, A
-				sleep 100
-				PixelGetColor, pixColor,1700,20,RGB
-				;if the chrome window is green, switch its desktop, else do nothing
-				if (pixColor = 0xD8B2AD)
-				{
-					WinClose A
-				}
-				if (active_ID = first_ID) ;when we get back to the first window, break out of loop.
-				{
-					break
-				}
-			}
-		}
-		else
-		{
-			WinClose %window%
-		}
-	}
-	return
-}
 
 /*===StreamDeck_Send All Windows to the Right Screen============================#HK15
 	Summary: For use with the Stream Deck.
@@ -582,20 +650,12 @@ return
 		Hotkey: CTRL + RMB
 	*/
 	^RButton::
-		IniRead, testBench, F:\Users\Josh\Documents\Autohotkey\AutoHotkey.ini, Toggles, testBench ;reads state of testBench from ini file
-		msgbox %testBench%
-		SetTimer, RemoveToolTip, 1000
-		Switch testBench
-		{
-		Case 1:
-			{
-				msgbox, heyyyy
-				testBench = 0
-				IniWrite, %testBench%, F:\Users\Josh\Documents\Autohotkey\AutoHotkey.ini, Toggles, testBench ;changes testBench state on ini file
-				msgbox %testBench%
-			}
+		myDict := CreateDictionary("name:Alice|age:30|city:Wonderland")
 
-		}
+		; Access values using keys
+		MsgBox % myDict["name"] ; Displays "Alice"
+		MsgBox % myDict["age"] ; Displays "30"
+		MsgBox % myDict["city"] ; Displays "Wonderland"
 
 	!#+e:: ;leave zoom call
 		SetTitleMatchMode, 2

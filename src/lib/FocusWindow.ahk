@@ -27,7 +27,7 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 
 	 If the window is already active, the function will minimize it and activate the previously activated window instead.
 
-	Paramters:
+	Parameters:
 		p_windowTitle: The title of the window to be focused on
 		p_matchMode (default = 2): Sets the Match Mode
 		p_hiddenWindows (default = "On"): Turns on/off the ability to detect hidden windows/windows that are on other virtual desktops

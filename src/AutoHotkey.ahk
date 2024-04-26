@@ -3,9 +3,9 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.23
-	Version Number: 1.3.0
+	Version Number: 1.4
 	Changelog:
-		Added content-aware hotkeys for Civ 6
+		HK06.1 & HK06.2: Added functionality to change the user-defined focus window
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -135,7 +135,8 @@ createDictionary(kVPairs)
 ;Audio Switcher										MEH + Backspace				#HK03
 ;Calculator											MEH + =						#HK04
 ;Shutdown											MEH + X						#HK05
-;Focus on Window									MEH + -						#HK06
+;Choose Focused Window								ALT + WIN + SHIFT + MINUS	#HK06.1
+;Focus on Window									MEH + MINUS					#HK06.2
 ;Instant Window Attributes							MEH + RMB					#HK07
 ;Instant Mouse Position								MEH + LMB					#HK08
 ;Mouse Switch Screen								MEH + F12					#HK09
@@ -288,21 +289,35 @@ $^+!x::
 	Shutdown, 1
 return
 
-/*======Focus on Window========================================================#HK06
-	Summary: Designate a window to focus on. Press the hotkey again to bring that window to the front
+/*======Choose Focused Window==================================================#HK06.1
+	Summary: Bring the designated window from the above hotkey to the front
 
-	Hotkey: MEH + -
+	Hotkey: ALT + WIN + SHIFT + MINUS
+*/
+$#+!-::
+	WinGet, focus_ID, ID, A
+	WinGetTitle, focus_title, A
+	Tooltip, Focusing on "%focus_title%"
+	SetTimer, RemoveToolTip, 3000
+return
+
+/*======Focus on Chosen Window=================================================#HK06.2
+	Summary: Bring the designated window from the above hotkey to the front
+
+	Hotkey: MEH + MINUS
 */
 $^+!-::
 	If (focus_ID)
 	{
 		focusID := "ahk_id " focus_ID
 		FocusWindow(focusID)
+		Tooltip, Focused on "%focus_title%"
+		SetTimer, RemoveToolTip, 3000
 	}
 	else
 	{
-		WinGet, focus_ID, ID, A
-		msgbox,,Focus on Window,Focus on %focus_ID%,3
+		ToolTip, Hold the Streamdeck button`nor press "Win + Shift + Alt + Minus"`nto choose a window to focus on.
+		SetTimer, RemoveToolTip, 3000
 	}
 return
 

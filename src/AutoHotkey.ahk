@@ -3,9 +3,9 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.23
-	Version Number: 1.4
+	Version Number: 1.4.1
 	Changelog:
-		HK06.1 & HK06.2: Added functionality to change the user-defined focus window
+		HK06.2: added maximize parameter for FocusWindow function
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -298,7 +298,7 @@ $#+!-::
 	WinGet, focus_ID, ID, A
 	WinGetTitle, focus_title, A
 	Tooltip, Focusing on "%focus_title%"
-	SetTimer, RemoveToolTip, 3000
+	SetTimer, RemoveToolTip, 2000
 return
 
 /*======Focus on Chosen Window=================================================#HK06.2
@@ -310,14 +310,14 @@ $^+!-::
 	If (focus_ID)
 	{
 		focusID := "ahk_id " focus_ID
-		FocusWindow(focusID)
+		FocusWindow(focusID,,,false)
 		Tooltip, Focused on "%focus_title%"
-		SetTimer, RemoveToolTip, 3000
+		SetTimer, RemoveToolTip, 2000
 	}
 	else
 	{
 		ToolTip, Hold the Streamdeck button`nor press "Win + Shift + Alt + Minus"`nto choose a window to focus on.
-		SetTimer, RemoveToolTip, 3000
+		SetTimer, RemoveToolTip, 2000
 	}
 return
 

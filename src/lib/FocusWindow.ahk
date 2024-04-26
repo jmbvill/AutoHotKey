@@ -3,8 +3,8 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.18
-	Version Number: 1.2.0
-	Changelog: Added optional size parameter
+	Version Number: 1.2.1
+	Changelog: Fixed bug where maximized windows would become unmaximized
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -63,10 +63,6 @@ FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On", p_maximize:="t
 		if (p_maximize == "true")
 		{
 			WinMaximize
-		}
-		Else
-		{
-			WinRestore
 		}
 	}
 	return

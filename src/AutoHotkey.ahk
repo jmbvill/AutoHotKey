@@ -3,9 +3,9 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.23
-	Version Number: 1.4.1
+	Version Number: 1.4.2
 	Changelog:
-		HK06.2: added maximize parameter for FocusWindow function
+		HK06.2: changed tooltip depending on whether window is focused on unfocused
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -307,11 +307,19 @@ return
 	Hotkey: MEH + MINUS
 */
 $^+!-::
+	DetectHiddenWindows, On
 	If (focus_ID)
 	{
 		focusID := "ahk_id " focus_ID
+		if (WinActive(focusID))
+		{
+			Tooltip, Unfocused on "%focus_title%"
+		}
+		Else
+		{
+			Tooltip, Focused on "%focus_title%"
+		}
 		FocusWindow(focusID,,,false)
-		Tooltip, Focused on "%focus_title%"
 		SetTimer, RemoveToolTip, 2000
 	}
 	else

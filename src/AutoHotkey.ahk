@@ -3,9 +3,9 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.23
-	Version Number: 1.4
+	Version Number: 1.4.2
 	Changelog:
-		HK06.1 & HK06.2: Added functionality to change the user-defined focus window
+		HK06.2: changed tooltip depending on whether window is focused on unfocused
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -298,7 +298,7 @@ $#+!-::
 	WinGet, focus_ID, ID, A
 	WinGetTitle, focus_title, A
 	Tooltip, Focusing on "%focus_title%"
-	SetTimer, RemoveToolTip, 3000
+	SetTimer, RemoveToolTip, 2000
 return
 
 /*======Focus on Chosen Window=================================================#HK06.2
@@ -307,17 +307,25 @@ return
 	Hotkey: MEH + MINUS
 */
 $^+!-::
+	DetectHiddenWindows, On
 	If (focus_ID)
 	{
 		focusID := "ahk_id " focus_ID
-		FocusWindow(focusID)
-		Tooltip, Focused on "%focus_title%"
-		SetTimer, RemoveToolTip, 3000
+		if (WinActive(focusID))
+		{
+			Tooltip, Unfocused on "%focus_title%"
+		}
+		Else
+		{
+			Tooltip, Focused on "%focus_title%"
+		}
+		FocusWindow(focusID,,,false)
+		SetTimer, RemoveToolTip, 2000
 	}
 	else
 	{
 		ToolTip, Hold the Streamdeck button`nor press "Win + Shift + Alt + Minus"`nto choose a window to focus on.
-		SetTimer, RemoveToolTip, 3000
+		SetTimer, RemoveToolTip, 2000
 	}
 return
 

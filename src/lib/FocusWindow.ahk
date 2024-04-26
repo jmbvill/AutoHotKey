@@ -3,8 +3,8 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.18
-	Version Number: 1.1.0
-	Changelog: Added if __name__ == __main__ functionality. Merged the main function of WindowFocus.ahk into FocusWindow.ahk.
+	Version Number: 1.2.0
+	Changelog: Added optional size parameter
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,11 +31,12 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 		p_windowTitle: The title of the window to be focused on
 		p_matchMode (default = 2): Sets the Match Mode
 		p_hiddenWindows (default = "On"): Turns on/off the ability to detect hidden windows/windows that are on other virtual desktops
+		p_maximize (default = "true"): When true, maximizes the window. When false, this function only activates the window retaining the same size.
 
 	Return:
 		Nothing
 */
-FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On")
+FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On", p_maximize:="true")
 {
 	;Set search parameters based on function parameters
 	setTitleMatchMode, %p_matchMode%
@@ -59,7 +60,14 @@ FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On")
 	else
 	{
 		WinActivate
-		WinMaximize
+		if (p_maximize == "true")
+		{
+			WinMaximize
+		}
+		Else
+		{
+			WinRestore
+		}
 	}
 	return
 }
@@ -69,10 +77,12 @@ FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On")
 
 	Command Line Arguments:	The first argument MUST be the Window Title!
 	"-1" will change the title match mode to use mode 1
-	"-2" will change the title match mode to use mode 2
+	"-2" default. will change the title match mode to use mode 2
 	"-regex" will change the title match mode to use regular expressions
-	"-hidden=on" will allow hidden windows/windows on other virtual desktops to be found
+	"-hidden=on" default. will allow hidden windows/windows on other virtual desktops to be found
 	"-hidden=off" won't allow hidden windows/windows on other virtual desktops to be found
+	"-maximize=true" default. will maximize the focused window
+	"-maximize=false" will focus on the window while retaining the original window size
 
 	Example: FocusWindow.ahk Messenger
  			- In the above example, the script will take "Messenger" as the title of the window that it should focus/unfocus
@@ -125,11 +135,21 @@ If (A_ScriptFullPath == A_LineFile)
 			{
 				hiddenWindows = on
 			}
+
+		;checking for maximize flag
+		Case "-maximize=false":
+			{
+				maximize = false
+			}
+		Case "-maximize=true":
+			{
+				maximize = true
+			}
 		}
 
 	}
 
-	;set default values for matchMode and hiddenWindows
+	;set default values for matchMode, hiddenWindows, and maximize
 	if (matchMode == "")
 	{
 		matchMode = 2
@@ -140,6 +160,11 @@ If (A_ScriptFullPath == A_LineFile)
 		hiddenWindows = on
 	}
 
+	if (maximize == "")
+	{
+		maximize = true
+	}
+
 	;call focus window
-	FocusWindow(windowTitle, matchMode, hiddenWindows)
+	FocusWindow(windowTitle, matchMode, hiddenWindows, maximize)
 }

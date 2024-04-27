@@ -2,10 +2,10 @@
 	AutoHotKey.ahk: My main hotkey script. Stays on during normal computer use and listens to hotkeys
 
 	Author: jmbvill
-	Date Modified: 2024.04.23
-	Version Number: 1.4.3
+	Date Modified: 2024.04.27
+	Version Number: 1.5.1
 	Changelog:
-		Added a startup sound to the autohotkey script
+		HK07: Added ahk_class and ahk_exe to tooltip
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -42,6 +42,11 @@ SoundPlay, C:\WINDOWS\Media\Speech On.wav
 ;===Blue Bubbles============================================
 #IfWinActive, ahk_class FLUTTER_RUNNER_WIN32_WINDOW
 	#Include %A_ScriptDir%\lib\BlueBubbles.ahk
+#IfWinActive
+
+;===Discord=================================================
+#IfWinActive, ahk_exe Discord.exe
+	#Include %A_ScriptDir%\lib\Discord.ahk
 #IfWinActive
 
 ;===Civilization VI=========================================
@@ -334,7 +339,7 @@ $^+!-::
 return
 
 /*======Instant Window Attributes==============================================#HK07
-	Summary: Hover the mouse over a window and press the hotkeys. A tooltip will appear with the Title, ahk_ID, size, and position of the window as long as the right mouse button is held.
+	Summary: Hover the mouse over a window and press the hotkeys. A tooltip will appear with the Title, ahk_ID, ahk_class, ahk_exe, size, and position of the window as long as the right mouse button is held.
 
 	Hotkey: MEH + RMB
 */
@@ -343,7 +348,9 @@ $^+!RButton::
 	MouseGetPos,,,WindowID
 	WinGetPos, X, Y, W, H,ahk_id %WindowID%
 	WinGetTitle, WindowTitle, ahk_id %WindowID%
-	tooltip, %WindowTitle%`nahk_id = %WindowID%`nx = %X%`, y = %Y%`, w = %W%`, h = %H%
+	WinGetClass, WindowClass, ahk_id %WindowID%
+	WinGet, WindowProcess, ProcessName, ahk_id %WindowID%
+	tooltip, %WindowTitle%`nahk_id = %WindowID%`nahk_class = %WindowClass%`nahk_exe = %WindowProcess%`nx = %X%`, y = %Y%`, w = %W%`, h = %H%
 	while GetKeyState("RButton", "P")
 	{
 		sleep 10

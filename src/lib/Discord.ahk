@@ -1,10 +1,10 @@
 ﻿/*---INFO-------------------------------------------------------------------------------------------------------------------------------------------------
-	FacebookMessenger.ahk: A script that has all the hotkeys I use with Facebook Messenger
+	Discord.ahk: A script that has all the hotkeys I use with Discord
 
 	Author: jmbvill
 	Date Modified: 2024.04.27
-	Version Number: 1.1.0
-	Changelog: Added universal hotkey to switch quickly between chats
+	Version Number: 1.0.0
+	Changelog: Initial Release
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -25,28 +25,15 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 
 ;---MAIN---------------------------------------------------------------------------------------------------------------------------------------------------
 ;NAME												HOTKEY						INDEX
-;FBMessenger_Focus on Text Input                    ESC                         #HK01
-;FBMessenger_Switch Chat							PAGE UP, PAGE DOWN			#HK02
+;Discord_Switch Chat								PAGE UP, PAGE DOWN			#HK01
 
-/*===FBMessenger_Focus on Text Input============================================#HK01
-	Summary: For use with Facebook Messenger.
-	Focuses the cursor on the text input box.
-
-	Hotkey: ESC
-*/
-esc::
-	send, ^k
-	sleep 25
-	send {esc}
-return
-
-/*===FBMessenger_Switch Chat====================================================#HK02
-	Summary: For use with Facebook Messenger.
-	Overrides FB Messenger's default chat switching hotkeys to the universal chat switching hotkeys
+/*===Discord_Switch Chat========================================================#HK01
+	Summary: For use with Discord.
+	Overrides Discord's default chat switching hotkeys to the universal chat switching hotkeys
 
 	Hotkey: PAGE UP, PAGE DOWN
 */
-$PgUp:: send, !{up}
+$PgUp:: send, ^!{up}
 Return
-$PgDn:: send, !{down}
+$PgDn:: send, ^!{down}
 return

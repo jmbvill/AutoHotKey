@@ -3,9 +3,9 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.27
-	Version Number: 1.5.0
+	Version Number: 1.5.1
 	Changelog:
-		Added Discord in content-aware includes
+		HK07: Added ahk_class and ahk_exe to tooltip
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -339,7 +339,7 @@ $^+!-::
 return
 
 /*======Instant Window Attributes==============================================#HK07
-	Summary: Hover the mouse over a window and press the hotkeys. A tooltip will appear with the Title, ahk_ID, size, and position of the window as long as the right mouse button is held.
+	Summary: Hover the mouse over a window and press the hotkeys. A tooltip will appear with the Title, ahk_ID, ahk_class, ahk_exe, size, and position of the window as long as the right mouse button is held.
 
 	Hotkey: MEH + RMB
 */
@@ -348,7 +348,9 @@ $^+!RButton::
 	MouseGetPos,,,WindowID
 	WinGetPos, X, Y, W, H,ahk_id %WindowID%
 	WinGetTitle, WindowTitle, ahk_id %WindowID%
-	tooltip, %WindowTitle%`nahk_id = %WindowID%`nx = %X%`, y = %Y%`, w = %W%`, h = %H%
+	WinGetClass, WindowClass, ahk_id %WindowID%
+	WinGet, WindowProcess, ProcessName, ahk_id %WindowID%
+	tooltip, %WindowTitle%`nahk_id = %WindowID%`nahk_class = %WindowClass%`nahk_exe = %WindowProcess%`nx = %X%`, y = %Y%`, w = %W%`, h = %H%
 	while GetKeyState("RButton", "P")
 	{
 		sleep 10

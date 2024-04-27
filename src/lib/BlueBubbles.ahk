@@ -2,9 +2,9 @@
 	BlueBubbles.ahk: A script that has all the hotkeys I use with Blue Bubbles
 
 	Author: jmbvill
-	Date Modified: 2024.04.23
-	Version Number: 1.0.0
-	Changelog: Initial Release
+	Date Modified: 2024.04.27
+	Version Number: 1.1.0
+	Changelog: Added universal hotkey to switch quickly between chats
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -26,6 +26,7 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 ;---MAIN---------------------------------------------------------------------------------------------------------------------------------------------------
 ;NAME												HOTKEY						INDEX
 ;BlueBubbles_Focus on Text Input                    ESC                         #HK01
+;BlueBubbles_Switch Chat		                    PAGE UP, PAGE DOWN			#HK02
 
 /*===BlueBubbles_Focus on Text Input============================================#HK01
 	Summary: For use with Blue Bubbles.
@@ -38,4 +39,15 @@ esc::
 	MouseMove, 600, 1030
 	MouseClick
 	MouseMove, mouseX, mouseY
+return
+
+/*===BlueBubbles_Switch Chat====================================================#HK02
+	Summary: For use with Blue Bubbles.
+	Overrides Blue Bubbles's default chat switching hotkeys to the universal chat switching hotkeys
+
+	Hotkey: PAGE UP, PAGE DOWN
+*/
+$PgUp:: send, ^{up}
+Return
+$PgDn:: send, ^{down}
 return

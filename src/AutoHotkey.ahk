@@ -2,10 +2,10 @@
 	AutoHotKey.ahk: My main hotkey script. Stays on during normal computer use and listens to hotkeys
 
 	Author: jmbvill
-	Date Modified: 2024.04.23
-	Version Number: 1.4.3
+	Date Modified: 2024.04.27
+	Version Number: 1.5.0
 	Changelog:
-		Added a startup sound to the autohotkey script
+		Added Discord in content-aware includes
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -42,6 +42,11 @@ SoundPlay, C:\WINDOWS\Media\Speech On.wav
 ;===Blue Bubbles============================================
 #IfWinActive, ahk_class FLUTTER_RUNNER_WIN32_WINDOW
 	#Include %A_ScriptDir%\lib\BlueBubbles.ahk
+#IfWinActive
+
+;===Discord=================================================
+#IfWinActive, ahk_exe Discord.exe
+	#Include %A_ScriptDir%\lib\Discord.ahk
 #IfWinActive
 
 ;===Civilization VI=========================================

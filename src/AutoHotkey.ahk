@@ -3,9 +3,9 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.23
-	Version Number: 1.4.2
+	Version Number: 1.4.3
 	Changelog:
-		HK06.2: changed tooltip depending on whether window is focused on unfocused
+		Added a startup sound to the autohotkey script
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -23,6 +23,10 @@ IniRead, testBench, %A_ScriptDir%\AutoHotkey.ini, Toggles, testBench
 ;The following settings are disabled because this script sets them during normal operation.
 ;SetTitleMatchMode, 1 ;The window's title can contain WinTitle anywhere inside it to be a match.
 ;DetectHiddenWindows, On ;Allows the script to find windows that live on different desktops.
+
+;Startup sound using a windows system sound that never gets used. This makes it easier to tell when the script starts up with windows
+;and when it successfully reloads
+SoundPlay, C:\WINDOWS\Media\Speech On.wav
 
 ;---INCLUDED FILES-----------------------------------------------------------------------------------------------------------------------------------------
 #Include %A_ScriptDir%\lib\FocusWindow.ahk
@@ -665,25 +669,14 @@ return
 			clipboard:=check
 		}
 	return
-	/*======Round Calculator Result=================================================#TB02
+	/*======General Purpose Hotkey=================================================#TB03
 		Summary: General purpose testing hotkey
 
 		Hotkey: CTRL + RMB
 	*/
-	^RButton::
-		myDict := CreateDictionary("name:Alice|age:30|city:Wonderland")
-
-		; Access values using keys
-		MsgBox % myDict["name"] ; Displays "Alice"
-		MsgBox % myDict["age"] ; Displays "30"
-		MsgBox % myDict["city"] ; Displays "Wonderland"
-
-	!#+e:: ;leave zoom call
-		SetTitleMatchMode, 2
-		WinActivate, "Zoom"
-		sleep 100
-		Send, !q
-		sleep 500
-		send {tab 2}{enter}
-	return
+; ^RButton::
+; 	SoundPlay, C:\WINDOWS\Media\Speech On.wav
+; 	ToolTip, playing sound
+; 	SetTimer, RemoveToolTip, 1000
+; return
 #If

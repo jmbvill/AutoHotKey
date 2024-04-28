@@ -2,10 +2,12 @@
 	AutoHotKey.ahk: My main hotkey script. Stays on during normal computer use and listens to hotkeys
 
 	Author: jmbvill
-	Date Modified: 2024.04.27
-	Version Number: 1.5.1
+	Date Modified: 2024.04.28
+	Version Number: 1.6.0
 	Changelog:
-		HK07: Added ahk_class and ahk_exe to tooltip
+		Deleted labels section
+		moved createDictionary function to ahk-util
+		added ahk-util to included files
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -32,6 +34,7 @@ SoundPlay, C:\WINDOWS\Media\Speech On.wav
 #Include %A_ScriptDir%\lib\FocusWindow.ahk
 #Include %A_ScriptDir%\external-lib\WinClip.ahk
 #Include %A_ScriptDir%\external-lib\WinClipAPI.ahk
+#Include %A_ScriptDir%\lib\ahk-util.ahk
 
 ;---CONTENT-AWARE INCLUDES----------------------------------------------------------------------------------------------------------------------------------
 ;===Facebook Messenger======================================
@@ -54,15 +57,8 @@ SoundPlay, C:\WINDOWS\Media\Speech On.wav
 	#Include %A_ScriptDir%\lib\CivilizationVI.ahk
 #IfWinActive
 
-;---LABELS-------------------------------------------------------------------------------------------------------------------------------------------------
-;This section is to set labels for use with the SetTimer function
-RemoveToolTip:
-	ToolTip
-return
-
 ;---FUNCTIONS----------------------------------------------------------------------------------------------------------------------------------------------
 ;closeWorkWindows										#F01
-;createDictionary										#F02
 
 /*======closeWorkWindows================================#F01
 	Summary: Closes windows based on window titles from a user-defined array
@@ -106,35 +102,6 @@ closeWindows(windowsToClose)
 		}
 	}
 	return
-}
-
-/*======createDictionary================================#F02
-	Summary: Creates a dictionary based on key value pairs that the user specifies
-
-	Parameters:
-		kVPairs: a list of key-value pairs where keys and values are separated by ":" and pairs are separated by "|"
-		for example kVPairs = "key1:value1|key2:value2|key3:value3"
-
-	Return:
-		dict: a dictionary (technically an associative array)
-*/
-createDictionary(kVPairs)
-{
-	;Initialize an empty dictionary
-	local dict := {}
-
-	;Split the input string into key-value pairs
-	pairs := StrSplit(kVPairs, "|")
-
-	;Loop through each pair and add it to the dictionary
-	for _, pair in pairs {
-		colonPos := InStr(pair, ":") ;Find the position of the colon in the string
-		key := Trim(SubStr(pair, 1, colonPos - 1)) ;Extract the string representing the key
-		value := Trim(SubStr(pair, colonPos + 1)) ;Extract the string representing the value
-		dict[key] := value
-	}
-
-	return dict
 }
 
 ;---MAIN---------------------------------------------------------------------------------------------------------------------------------------------------

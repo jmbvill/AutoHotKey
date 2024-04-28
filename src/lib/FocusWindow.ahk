@@ -69,8 +69,7 @@ FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On", p_maximize:="t
 		}
 		Tooltip, Focused on "%p_windowTitle%"
 	}
-	sleep 2000
-	tooltip
+	SetTimer, RemoveToolTip, 2000
 	return
 }
 

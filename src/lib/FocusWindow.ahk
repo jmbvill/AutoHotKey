@@ -53,23 +53,22 @@ FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On", p_maximize:="t
 	; If the window is active, then minimize it and then activate the previous active window
 	if (WinActive(p_windowTitle))
 	{
-
 		Send !{Esc} ;Activates the most recently activated window
 		sleep 10
 		WinMinimize, p_windowTitle
 		Tooltip, Unfocused on "%p_windowTitle%"
-
 	}
 	else
 	{
+
 		WinActivate
 		if (p_maximize == "true")
 		{
 			WinMaximize
 		}
 		Tooltip, Focused on "%p_windowTitle%"
+
 	}
-	SetTimer, RemoveToolTip, 2000
 	return
 }
 
@@ -168,4 +167,6 @@ If (A_ScriptFullPath == A_LineFile)
 
 	;call focus window
 	FocusWindow(windowTitle, matchMode, hiddenWindows, maximize)
+	sleep 2000
+	tooltip
 }

@@ -2,9 +2,10 @@
 	FocusWindow.ahk: A function that finds an open window using its title, focuses on the window, and brings it to the front. A user or program calls this script from the command line with specific arguments and flags to change the functionality.
 
 	Author: jmbvill
-	Date Modified: 2024.04.18
-	Version Number: 1.2.1
-	Changelog: Fixed bug where maximized windows would become unmaximized
+	Date Modified: 2024.04.28
+	Version Number: 1.2.2
+	Changelog:
+		F01: Added tooltip popups for window focus/unfocus
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -56,6 +57,8 @@ FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On", p_maximize:="t
 		Send !{Esc} ;Activates the most recently activated window
 		sleep 10
 		WinMinimize, p_windowTitle
+		Tooltip, Unfocused on "%p_windowTitle%"
+
 	}
 	else
 	{
@@ -64,7 +67,10 @@ FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On", p_maximize:="t
 		{
 			WinMaximize
 		}
+		Tooltip, Focused on "%p_windowTitle%"
 	}
+	sleep 2000
+	tooltip
 	return
 }
 

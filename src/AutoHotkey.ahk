@@ -3,11 +3,9 @@
 
 	Author: jmbvill
 	Date Modified: 2024.04.28
-	Version Number: 1.6.0
+	Version Number: 1.6.1
 	Changelog:
-		Deleted labels section
-		moved createDictionary function to ahk-util
-		added ahk-util to included files
+		Changed all-purpose hotkeys section for PDF hyperlink testing
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -648,9 +646,52 @@ return
 
 		Hotkey: CTRL + RMB
 	*/
-; ^RButton::
-; 	SoundPlay, C:\WINDOWS\Media\Speech On.wav
-; 	ToolTip, playing sound
-; 	SetTimer, RemoveToolTip, 1000
-; return
+	^RButton::
+	; ; CoordMode, Mouse, Screen
+	; ; y_position = 235
+	; ; x_positions := [2540,2680,2800,2940,3080,3200,3350]
+	; ; Send ^g
+	; ; sleep 50
+	; ; send ^c
+	; ; for k, x_position in x_positions
+	; ; {
+	; ; 	KeyWait, Shift, down
+	; ; 	KeyWait, Shift, up
+	; ; 	MouseClick, L, x_position, y_position
+	; ; 	sleep 75
+	; ; 	KeyWait, Shift, down
+	; ; 	KeyWait, Shift, up
+	; ; 	Send ^g
+	; ; 	sleep 200
+	; ; 	send ^v{enter}
+
+	; ; 	sleep 200
+	; ; }
+	; ; tooltip done!
+	; ; SetTimer, RemoveToolTip, 2500
+	; Send ^g
+	; sleep 200
+	; send ^v{enter}
+	return
+	^!RButton::
+	; CoordMode, Mouse, Screen
+	; y_position = 220
+	; x_positions := {"m":2730,"t":2780,"w":2830,"th":2880,"f":2930,"s":2980,"su":3030}
+	; clicks := ["m","t","w","th","f","s","su"] ;,"s","f","th","w","t","m","w","f","su","f","w","m","th","su","th","m","f","su","w","m","s","su","t","su","m","su"]
+	; for k,click in clicks
+	; {
+	; 	for j,jclick in clicks
+	; 	{
+	; 		KeyWait, RButton, down
+	; 		KeyWait, RButton, up
+	; 		MouseClick, L, x_positions[click], y_position
+	; 		sleep 150
+	; 		MouseClick, L, x_positions[jclick], y_position
+	; 	}
+	; 	sleep 75
+
+	; }
+	; tooltip done!
+	; SetTimer, RemoveToolTip, 2500
+	return
 #If

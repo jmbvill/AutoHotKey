@@ -2,12 +2,10 @@
 	AutoHotKey.ahk: My main hotkey script. Stays on during normal computer use and listens to hotkeys
 
 	Author: jmbvill
-	Date Modified: 2024.04.28
-	Version Number: 1.6.0
+	Date Modified: 2024.05.14
+	Version Number: 1.6.2
 	Changelog:
-		Deleted labels section
-		moved createDictionary function to ahk-util
-		added ahk-util to included files
+		Changed browser from Edge to Brave
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -320,7 +318,7 @@ $^+!RButton::
 	tooltip, %WindowTitle%`nahk_id = %WindowID%`nahk_class = %WindowClass%`nahk_exe = %WindowProcess%`nx = %X%`, y = %Y%`, w = %W%`, h = %H%
 	while GetKeyState("RButton", "P")
 	{
-		sleep 10
+		sleep 20
 	}
 	tooltip
 return
@@ -338,7 +336,7 @@ $^+!LButton::
 	tooltip, mousepos: x=%X% y=%Y%`ncolor=%pixColor%
 	while GetKeyState("LButton", "P")
 	{
-		sleep 10
+		sleep 20
 	}
 	tooltip
 return
@@ -390,7 +388,7 @@ $^!+n::
 		Sleep 100
 		WinGet, active_ID, ID, A ;get their IDs
 		WinGetTitle, title, A
-		;if Window is Discord or Obsidian, get its position and put it on the right monitor
+		;if Window is Discord, Obsidian, BlueBubbles, Messenger get its position and put it on the right monitor
 		if (InStr(title, "Discord") || InStr(title, "Obsidian") || InStr(title, "BlueBubbles") || InStr(title, "Messenger"))
 		{
 			wingetpos, xpos,ypos,,,A
@@ -401,8 +399,8 @@ $^!+n::
 				sleep 100
 			}
 		}
-		;if Window is Thunderbird, get its position and put it on the right monitor then switch its desktop
-		if (InStr(title, "Thunderbird") || InStr(title, "Slack") || InStr(title, "Outlook"))
+		;if Window is Spark, Slack, Outlook get its position and put it on the right monitor then switch its desktop
+		if (InStr(title, "Spark") || InStr(title, "Slack") || InStr(title, "Outlook"))
 		{
 			wingetpos, xpos,ypos,,,A
 			sleep 100
@@ -414,8 +412,8 @@ $^!+n::
 			Send #!{right}
 			sleep 100
 		}
-		;if window is edge, get its position and put it on the left monitor then get its Color
-		if (InStr(title, "Edge"))
+		;if window is Internet Browser, get its position and put it on the left monitor then get its Color
+		if (InStr(title, "Brave"))
 		{
 			wingetpos, xpos,ypos,,,A
 			sleep 100
@@ -425,8 +423,8 @@ $^!+n::
 				sleep 100
 			}
 			PixelGetColor, pixColor,1700,20,RGB
-			;if the chrome window is green, switch its desktop, else do nothing
-			if (pixColor = 0xD8B2AD)
+			;if the browser window is for work, switch its desktop, else do nothing
+			if (pixColor = 0xCDA398)
 			{
 				Send #!{right}
 				sleep 100
@@ -648,9 +646,52 @@ return
 
 		Hotkey: CTRL + RMB
 	*/
-; ^RButton::
-; 	SoundPlay, C:\WINDOWS\Media\Speech On.wav
-; 	ToolTip, playing sound
-; 	SetTimer, RemoveToolTip, 1000
-; return
+	^RButton::
+	; ; CoordMode, Mouse, Screen
+	; ; y_position = 235
+	; ; x_positions := [2540,2680,2800,2940,3080,3200,3350]
+	; ; Send ^g
+	; ; sleep 50
+	; ; send ^c
+	; ; for k, x_position in x_positions
+	; ; {
+	; ; 	KeyWait, Shift, down
+	; ; 	KeyWait, Shift, up
+	; ; 	MouseClick, L, x_position, y_position
+	; ; 	sleep 75
+	; ; 	KeyWait, Shift, down
+	; ; 	KeyWait, Shift, up
+	; ; 	Send ^g
+	; ; 	sleep 200
+	; ; 	send ^v{enter}
+
+	; ; 	sleep 200
+	; ; }
+	; ; tooltip done!
+	; ; SetTimer, RemoveToolTip, 2500
+	; Send ^g
+	; sleep 200
+	; send ^v{enter}
+	return
+	^!RButton::
+	; CoordMode, Mouse, Screen
+	; y_position = 220
+	; x_positions := {"m":2730,"t":2780,"w":2830,"th":2880,"f":2930,"s":2980,"su":3030}
+	; clicks := ["m","t","w","th","f","s","su"] ;,"s","f","th","w","t","m","w","f","su","f","w","m","th","su","th","m","f","su","w","m","s","su","t","su","m","su"]
+	; for k,click in clicks
+	; {
+	; 	for j,jclick in clicks
+	; 	{
+	; 		KeyWait, RButton, down
+	; 		KeyWait, RButton, up
+	; 		MouseClick, L, x_positions[click], y_position
+	; 		sleep 150
+	; 		MouseClick, L, x_positions[jclick], y_position
+	; 	}
+	; 	sleep 75
+
+	; }
+	; tooltip done!
+	; SetTimer, RemoveToolTip, 2500
+	return
 #If

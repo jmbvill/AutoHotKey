@@ -2,10 +2,10 @@
 	AutoHotKey.ahk: My main hotkey script. Stays on during normal computer use and listens to hotkeys
 
 	Author: jmbvill
-	Date Modified: 2024.04.28
-	Version Number: 1.6.1
+	Date Modified: 2024.05.14
+	Version Number: 1.6.2
 	Changelog:
-		Changed all-purpose hotkeys section for PDF hyperlink testing
+		Changed browser from Edge to Brave
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -318,7 +318,7 @@ $^+!RButton::
 	tooltip, %WindowTitle%`nahk_id = %WindowID%`nahk_class = %WindowClass%`nahk_exe = %WindowProcess%`nx = %X%`, y = %Y%`, w = %W%`, h = %H%
 	while GetKeyState("RButton", "P")
 	{
-		sleep 10
+		sleep 20
 	}
 	tooltip
 return
@@ -336,7 +336,7 @@ $^+!LButton::
 	tooltip, mousepos: x=%X% y=%Y%`ncolor=%pixColor%
 	while GetKeyState("LButton", "P")
 	{
-		sleep 10
+		sleep 20
 	}
 	tooltip
 return
@@ -388,7 +388,7 @@ $^!+n::
 		Sleep 100
 		WinGet, active_ID, ID, A ;get their IDs
 		WinGetTitle, title, A
-		;if Window is Discord or Obsidian, get its position and put it on the right monitor
+		;if Window is Discord, Obsidian, BlueBubbles, Messenger get its position and put it on the right monitor
 		if (InStr(title, "Discord") || InStr(title, "Obsidian") || InStr(title, "BlueBubbles") || InStr(title, "Messenger"))
 		{
 			wingetpos, xpos,ypos,,,A
@@ -399,8 +399,8 @@ $^!+n::
 				sleep 100
 			}
 		}
-		;if Window is Thunderbird, get its position and put it on the right monitor then switch its desktop
-		if (InStr(title, "Thunderbird") || InStr(title, "Slack") || InStr(title, "Outlook"))
+		;if Window is Spark, Slack, Outlook get its position and put it on the right monitor then switch its desktop
+		if (InStr(title, "Spark") || InStr(title, "Slack") || InStr(title, "Outlook"))
 		{
 			wingetpos, xpos,ypos,,,A
 			sleep 100
@@ -412,8 +412,8 @@ $^!+n::
 			Send #!{right}
 			sleep 100
 		}
-		;if window is edge, get its position and put it on the left monitor then get its Color
-		if (InStr(title, "Edge"))
+		;if window is Internet Browser, get its position and put it on the left monitor then get its Color
+		if (InStr(title, "Brave"))
 		{
 			wingetpos, xpos,ypos,,,A
 			sleep 100
@@ -423,8 +423,8 @@ $^!+n::
 				sleep 100
 			}
 			PixelGetColor, pixColor,1700,20,RGB
-			;if the chrome window is green, switch its desktop, else do nothing
-			if (pixColor = 0xD8B2AD)
+			;if the browser window is for work, switch its desktop, else do nothing
+			if (pixColor = 0xCDA398)
 			{
 				Send #!{right}
 				sleep 100

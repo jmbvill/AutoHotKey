@@ -9,10 +9,10 @@
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
-#NoEnv ;Recommended for performance and compatibility with future AutoHotkey releases.
+#Requires Autohotkey v2.0
 ; #Warn  ;Enable warnings to assist with detecting common errors.
-SendMode Input ;Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
+SendMode("Input") ;Recommended for new scripts due to its superior speed and reliability.
+SetWorkingDir(A_ScriptDir) ;Ensures a consistent starting directory.
 
 ;The following settings are disabled because this script sets them during normal operation.
 ;SetTitleMatchMode, 1 ;The window's title can contain WinTitle anywhere inside it to be a match.
@@ -40,12 +40,12 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On", p_maximize:="true")
 {
 	;Set search parameters based on function parameters
-	setTitleMatchMode, %p_matchMode%
-	DetectHiddenWindows, %p_hiddenWindows%
+	SetTitleMatchMode(p_matchMode)
+	DetectHiddenWindows(p_hiddenWindows)
 	; Makes sure that the window exists
 	if (!WinExist(p_windowTitle))
 	{
-		msgbox Window does not exist!`nMake sure to include any flags AFTER the Window Title.`nIf Window Title has spaces, put the Window Title in quotes.
+		MsgBox("Window does not exist!`nMake sure to include any flags AFTER the Window Title.`nIf Window Title has spaces, put the Window Title in quotes.")
 		return
 	}
 
@@ -53,20 +53,20 @@ FocusWindow(p_windowTitle, p_matchMode:=2, p_hiddenWindows:="On", p_maximize:="t
 	; If the window is active, then minimize it and then activate the previous active window
 	if (WinActive(p_windowTitle))
 	{
-		Send !{Esc} ;Activates the most recently activated window
-		sleep 10
-		WinMinimize, p_windowTitle
-		Tooltip, Unfocused on "%p_windowTitle%"
+		Send("!{Esc}") ;Activates the most recently activated window
+		Sleep(10)
+		WinMinimize("p_windowTitle")
+		ToolTip("Unfocused on `"" p_windowTitle "`"")
 	}
 	else
 	{
 
-		WinActivate
+		WinActivate()
 		if (p_maximize == "true")
 		{
-			WinMaximize
+			WinMaximize()
 		}
-		Tooltip, Focused on "%p_windowTitle%"
+		ToolTip("Focused on `"" p_windowTitle "`"")
 
 	}
 	return
@@ -101,49 +101,49 @@ If (A_ScriptFullPath == A_LineFile)
 	windowTitle := args[1]
 
 	;Makes sure that an argument is included
-	if (args.MaxIndex() < 1)
+	if (args.Length != 0 ? args.Length : "" < 1)
 	{
-		MsgBox Please provide a window title in arguments.`nWindow title MUST be the first argument.
+		MsgBox("Please provide a window title in arguments.`nWindow title MUST be the first argument.")
 		return
 	}
 
 	;Checks if the user included a flag to set match mode and detect hidden windows
 	for n, arg in args
 	{
-		Switch arg
+Switch arg
 		{
 		;checking for match mode flag
-		Case "-regex":
+		Case "-regex": 
 			{
-				matchMode = regex
+				matchMode := "regex"
 			}
-		Case "-2":
+		Case "-2": 
 			{
-				matchMode = 2
+				matchMode := "2"
 			}
-		Case "-1":
+		Case "-1": 
 			{
-				matchMode = 1
+				matchMode := "1"
 			}
 
 		;checking for detect hidden windows flag
-		Case "-hidden=off":
+		Case "-hidden=off": 
 			{
-				hiddenWindows = off
+				hiddenWindows := "off"
 			}
-		Case "-hidden=on":
+		Case "-hidden=on": 
 			{
-				hiddenWindows = on
+				hiddenWindows := "on"
 			}
 
 		;checking for maximize flag
-		Case "-maximize=false":
+		Case "-maximize=false": 
 			{
-				maximize = false
+				maximize := "false"
 			}
-		Case "-maximize=true":
+		Case "-maximize=true": 
 			{
-				maximize = true
+				maximize := "true"
 			}
 		}
 
@@ -152,21 +152,21 @@ If (A_ScriptFullPath == A_LineFile)
 	;set default values for matchMode, hiddenWindows, and maximize
 	if (matchMode == "")
 	{
-		matchMode = 2
+		matchMode := "2"
 	}
 
 	if (hiddenWindows == "")
 	{
-		hiddenWindows = on
+		hiddenWindows := "on"
 	}
 
 	if (maximize == "")
 	{
-		maximize = true
+		maximize := "true"
 	}
 
 	;call focus window
 	FocusWindow(windowTitle, matchMode, hiddenWindows, maximize)
-	sleep 2000
-	tooltip
+	Sleep(2000)
+	ToolTip()
 }

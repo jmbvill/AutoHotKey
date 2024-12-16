@@ -1,4 +1,4 @@
-/*---INFO-------------------------------------------------------------------------------------------------------------------------------------------------
+﻿/*---INFO-------------------------------------------------------------------------------------------------------------------------------------------------
 	ahk-util.ahk: A script that has all utility functions that I like to use
 
 	Author: jmbvill
@@ -8,10 +8,10 @@
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
-#NoEnv ;Recommended for performance and compatibility with future AutoHotkey releases.
+; V1toV2: Removed #NoEnv ;Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ;Enable warnings to assist with detecting common errors.
-SendMode Input ;Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
+SendMode("Input") ;Recommended for new scripts due to its superior speed and reliability.
+SetWorkingDir(A_ScriptDir) ;Ensures a consistent starting directory.
 
 ;The following settings are disabled because this script sets them during normal operation.
 ;SetTitleMatchMode, 1 ;The window's title can contain WinTitle anywhere inside it to be a match.
@@ -33,7 +33,7 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 */
 RemoveToolTip()
 {
-    ToolTip
+    ToolTip()
     return
 }
 
@@ -59,7 +59,7 @@ createDictionary(kVPairs)
     for _, pair in pairs {
         colonPos := InStr(pair, ":") ;Find the position of the colon in the string
         key := Trim(SubStr(pair, 1, colonPos - 1)) ;Extract the string representing the key
-        value := Trim(SubStr(pair, colonPos + 1)) ;Extract the string representing the value
+        value := Trim(SubStr(pair, (colonPos + 1)<1 ? (colonPos + 1)-1 : (colonPos + 1))) ;Extract the string representing the value
         dict[key] := value
     }
 

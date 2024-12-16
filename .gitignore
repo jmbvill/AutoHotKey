@@ -2,6 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=autohotkey
 
 ### User Ignored Files ###
+/src/AHK-v2-script-converter-master
 
 
 ### Autohotkey ###
@@ -54,3 +55,4 @@ Temporary Items
 .apdisk
 
 # End of https://www.toptal.com/developers/gitignore/api/autohotkey
+

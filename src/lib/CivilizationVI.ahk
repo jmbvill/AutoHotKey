@@ -1,4 +1,4 @@
-/*---INFO-------------------------------------------------------------------------------------------------------------------------------------------------
+﻿/*---INFO-------------------------------------------------------------------------------------------------------------------------------------------------
 	CivilizationVI.ahk: A script that has all the hotkeys I use while playing Civ 6
 
 	Author: jmbvill
@@ -8,11 +8,11 @@
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
-#InstallKeybdHook ;monitors keystrokes that are not supported by RegisterHotkey. Also supports the Input command.
-#NoEnv ;Recommended for performance and compatibility with future AutoHotkey releases.
+InstallKeybdHook() ;monitors keystrokes that are not supported by RegisterHotkey. Also supports the Input command.
+; V1toV2: Removed #NoEnv ;Recommended for performance and compatibility with future AutoHotkey releases.
 ;#Warn  ;Enable warnings to assist with detecting common errors.
-SendMode Input ;Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
+SendMode("Input") ;Recommended for new scripts due to its superior speed and reliability.
+SetWorkingDir(A_ScriptDir) ;Ensures a consistent starting directory.
 
 ;The following settings are disabled because this script sets them during normal operation.
 ;SetTitleMatchMode, 1 ;The window's title can contain WinTitle anywhere inside it to be a match.
@@ -34,10 +34,13 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 	Hotkey: CTRL + R
 */
 ^r::
-    CoordMode, Mouse, Screen
-    Send, {esc}
-    sleep 500
-    MouseClick, Left, 960, 550
-    sleep 500
-    MouseClick, Left, 840, 580
+{ ; V1toV2: Added bracket
+global ; V1toV2: Made function global
+    CoordMode("Mouse", "Screen")
+    Send("{esc}")
+    Sleep(500)
+    MouseClick("Left", 960, 550)
+    Sleep(500)
+    MouseClick("Left", 840, 580)
 return
+} ; V1toV2: Added bracket in the end

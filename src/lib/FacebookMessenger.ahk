@@ -8,11 +8,11 @@
 */
 
 ;---SETTINGS-----------------------------------------------------------------------------------------------------------------------------------------------
-#InstallKeybdHook ;monitors keystrokes that are not supported by RegisterHotkey. Also supports the Input command.
-#NoEnv ;Recommended for performance and compatibility with future AutoHotkey releases.
+InstallKeybdHook() ;monitors keystrokes that are not supported by RegisterHotkey. Also supports the Input command.
+; V1toV2: Removed #NoEnv ;Recommended for performance and compatibility with future AutoHotkey releases.
 ;#Warn  ;Enable warnings to assist with detecting common errors.
-SendMode Input ;Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
+SendMode("Input") ;Recommended for new scripts due to its superior speed and reliability.
+SetWorkingDir(A_ScriptDir) ;Ensures a consistent starting directory.
 
 ;The following settings are disabled because this script sets them during normal operation.
 ;SetTitleMatchMode, 1 ;The window's title can contain WinTitle anywhere inside it to be a match.
@@ -35,10 +35,13 @@ SetWorkingDir %A_ScriptDir% ;Ensures a consistent starting directory.
 	Hotkey: ESC
 */
 esc::
-	send, ^k
-	sleep 25
-	send {esc}
+{
+global ; V1toV2: Made function global
+	Send("^k")
+	Sleep(25)
+	Send("{esc}")
 return
+}
 
 /*===FBMessenger_Switch Chat====================================================#HK02
 	Summary: For use with Facebook Messenger.
@@ -46,7 +49,13 @@ return
 
 	Hotkey: PAGE UP, PAGE DOWN
 */
-$PgUp:: send, !{up}
+$PgUp::
+{
+Send("!{up}")
 Return
-$PgDn:: send, !{down}
+}
+$PgDn::
+{
+Send("!{down}")
 return
+}
